@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { access, mkdir, writeFile } from "fs/promises";
 import fs from "fs";
 
+import { setting } from "../setting";
 
 import { Logger } from "../utils/common";
 import { Image, GetImageReturn } from "../utils/types/types";
@@ -14,8 +15,8 @@ const delayer = new Wait();
 
 
 
-const API =
-    "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=1000"
+const API = setting.apiUrl
+const delayAfterDownload = setting.delayAfterDownload
 
 export class DownloadImage {
     constructor() { }
@@ -36,7 +37,7 @@ export class DownloadImage {
                 return { url: image.file_url, id: image.id }
             })
             if (response) logger.log(`Found : ${images.length} images !!!`)
-            await delayer.start(1000 * 3)
+            await delayer.start(1000 * delayAfterDownload)
             logger.log("")
             return { length: images.length, images: images }
         } catch (err) {

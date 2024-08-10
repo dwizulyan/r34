@@ -6,9 +6,13 @@ import { Wait } from "../utils/common";
 import { DownloadImage } from "./downloadImageService";
 import { todo } from "node:test";
 
+import { setting } from "../setting";
+
 const logger = new Logger();
 const wait = new Wait();
 const downlaodImg = new DownloadImage();
+
+const defaultLocation = setting.defaultLocation
 
 const API =
     "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=1000"
@@ -18,7 +22,7 @@ class UpdateService {
     constructor() { }
     async checkUpdate(tags: string) {
         try {
-            const tagsLocation: string = path.join("C:/Collection", tags, "history.json")
+            const tagsLocation: string = path.join(defaultLocation, tags, "history.json")
             logger.log(`Checking : ${tagsLocation}`)
             await wait.start(1)
             await access(tagsLocation)
@@ -48,7 +52,7 @@ class UpdateService {
                 logger.log(`New image found!!`)
                 logger.log(`${newImage} image to download`)
 
-                await downlaodImg.batchDownlood(5, toDownload, 0, Math.ceil(toDownload.length / 5), path.join("C:/collection", tags, "images"), tags, toDownload)
+                await downlaodImg.batchDownlood(5, toDownload, 0, Math.ceil(toDownload.length / 5), path.join(defaultLocation, tags, "images"), tags, toDownload)
             }
         } catch (err) {
             if (err instanceof Error)
