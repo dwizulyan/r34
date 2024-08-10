@@ -1,0 +1,20 @@
+{
+  "name": "image-downloader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx ./app.ts",
+    "test":"tsx ./test/test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/node": "^22.1.0",
+    "@types/yargs": "^17.0.32",
+    "axios": "^1.7.3",
+    "tsx": "^4.16.5",
+    "yargs": "^17.7.2"
+  }
+}
