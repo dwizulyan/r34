@@ -2,7 +2,7 @@
 
 Yes, you know what this project do...
 
-#### First thing first ...
+#### First thing first
 
 ```
 npm i -g typescript # if you dont have typescript
@@ -19,9 +19,13 @@ npx tsx ./app.ts --method=update|download --tags=tag
 ```
 
 `update` method used to update existing folder
-`download` method used to download based on tag
 
-#### One more thing
+`download` method used to download based on tag.
 
-by default the directory for saving downloading image are in `C:/collection/<tag>`
-it'll automatically create the folder if not available
+#### Other things
+
+By default the directory for saving downloading image are in `C:/collection/<tag>`
+
+It'll automatically create the folder if not available.
+
+If you want to change the location, go to `setting.ts` and change the `defaultLocation` value to your preference.
