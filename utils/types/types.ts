@@ -25,3 +25,7 @@ export type GetImageReturn = {
     length: number;
     images: string[];
 }
+export type ProcessedImage = {
+    url: string,
+    id: number,
+}

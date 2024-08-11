@@ -1,3 +1,5 @@
+import { ProcessedImage, Image } from "../types/types"
+
 export class Wait {
     constructor() { }
     async start(timer: number) {
@@ -21,9 +23,24 @@ export class Logger {
 
         else {
             for (const message of messages) {
-                console.log(`➡️\t${message}`)
+                console.log(`➡️  ${message}`)
             }
         }
 
+    }
+}
+/**
+ * Sorting purpose,
+ */
+export class Sort {
+    constructor() { }
+    /**
+     * 
+     * Sorting
+     * @param data - Data to be sorted
+     * @returns
+     */
+    sort(data: any) {
+        return data.sort((a: any, b: any) => a.id - b.id)
     }
 }
