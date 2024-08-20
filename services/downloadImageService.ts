@@ -80,13 +80,19 @@ export class DownloadImage {
         try {
             const response = await axios.get(url, { responseType: "stream" })
             const writer = fs.createWriteStream(file);
+            const totalLength = response.headers['content-length'];
+            let downloadedLength = 0;
 
             response.data.pipe(writer)
+            response.data.on('data', (chunk: Buffer) => {
+                downloadedLength += chunk.length;
+                const progress = (downloadedLength / totalLength) * 100;
+                process.stdout.write(`🟢  Progress : ${progress.toFixed(2)}%\r`);
+            });
+
             await new Promise((resolve, reject) => {
                 writer.on("finish", () => {
-                    resolve(
-                        logger.log("Download success ✅")
-                    )
+                    resolve("")
                 })
                 writer.on("error", (err) => {
                     logger.log(err.toString())
