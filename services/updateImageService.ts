@@ -6,7 +6,7 @@ import { Wait } from "../utils/common";
 import { DownloadImage } from "./downloadImageService";
 import { Sort } from "../utils/common";
 
-import { setting } from "../setting";
+import { settings } from "../utils/setting";
 
 import { Image, ProcessedImage } from "../utils/types/types";
 
@@ -15,11 +15,11 @@ const wait = new Wait();
 const downlaodImg = new DownloadImage();
 const sorter = new Sort();
 
-const defaultLocation = setting.defaultLocation
-const defaultFolderImagesName = setting.defaultFolderImagesName
-const defaultEncoding: BufferEncoding = setting.defaultEncoding as BufferEncoding;
+const defaultLocation = settings.location
+const defaultFolderImagesName = settings.folderImagesName
+const defaultEncoding: BufferEncoding = settings.encoding as BufferEncoding;
 
-const API = setting.apiUrl
+const API = settings.apiUrl
 
 class UpdateService {
 

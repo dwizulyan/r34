@@ -1,4 +1,7 @@
 import { ProcessedImage, Image } from "../types/types"
+import { writeFile, stat, unlink } from "fs/promises"
+import defaultSetting from "../../setting.json"
+import path from "path"
 
 export class Wait {
     constructor() { }
@@ -42,5 +45,24 @@ export class Sort {
      */
     sort(data: any) {
         return data.sort((a: any, b: any) => a.id - b.id)
+    }
+}
+
+export class Setting {
+    logger = new Logger()
+    constructor() {
+
+    }
+    async update(newSetting: typeof defaultSetting) {
+        try {
+            await stat(path.join(__dirname, "../setting.json"))
+            await unlink(path.join(__dirname, "../setting.json"))
+            await writeFile(path.join(__dirname, "../setting.json"), JSON.stringify(newSetting))
+            this.logger.log("")
+            this.logger.log("Success writing new setting...")
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
 }

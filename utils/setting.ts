@@ -1,20 +1,30 @@
-export const setting = {
+import { readFile } from "fs"
+import path from "path"
+
+import defaultSetting from "../setting.json"
+
+
+
+export const settings = {
     // Api url to download the image
     // you can also modify the limit per fetch
     // or anything pertty much
-    apiUrl: "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=500",
+    apiUrl: defaultSetting.apiUrl,
 
     // delay given after successfully download a single batch
-    delayAfterDownload: 2,
+    delayAfterDownload: defaultSetting.delayAfterDownload,
 
     // defualt location to save downloaded file
-    defaultLocation: "C:/collection",
+    location: defaultSetting.location,
 
     // the default name for folder used to contain images  
     // example : C:/<tag>/<defaultFolderImagesName>
-    defaultFolderImagesName: "images",
+    folderImagesName: defaultSetting.folderImagesName,
 
     // default encoding to write the history.json or read history.json
     // usually use utf-8 but if you have something to do, just change it
-    defaultEncoding: "utf-8",
+    encoding: defaultSetting.encoding,
+
+    // images to download per batch
+    downloadPerBatch: defaultSetting.downloadPerBatch
 }

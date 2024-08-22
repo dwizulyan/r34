@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { access, mkdir, writeFile } from "fs/promises";
 import fs from "fs";
 
-import { setting } from "../setting";
+import { settings } from "../utils/setting";
 
 import { Logger } from "../utils/common";
 import { Image, GetImageReturn } from "../utils/types/types";
@@ -15,8 +15,8 @@ const delayer = new Wait();
 
 
 
-const API = setting.apiUrl
-const delayAfterDownload = setting.delayAfterDownload
+const API = settings.apiUrl
+const delayAfterDownload = settings.delayAfterDownload
 
 export class DownloadImage {
     constructor() { }
