@@ -32,7 +32,7 @@ export class DownloadImage {
         try {
             logger.log("")
             logger.log(`Searching 🔍 : ${tags.replaceAll(" ", "+")}`)
-            const response: AxiosResponse = await axios.get(`${API}&tags=${tags}`)
+            const response: AxiosResponse = await axios.get(`${API}&limit=${settings.imagesLimit}&tags=${tags}`)
             const images: { url: string, id: number }[] = response.data.map((image: Image) => {
                 return { url: image.file_url, id: image.id }
             })

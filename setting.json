@@ -1,1 +1,1 @@
-{"apiUrl":"https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=500","delayAfterDownload":0.5,"location":"C:/collection","folderImagesName":"images","encoding":"utf-8","downloadPerBatch":5}
+{"apiUrl":"https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1","delayAfterDownload":0.1,"location":"C:/collection","folderImagesName":"images","encoding":"utf-8","downloadPerBatch":5,"imagesLimit":1000}

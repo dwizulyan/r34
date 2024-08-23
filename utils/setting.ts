@@ -26,5 +26,7 @@ export const settings = {
     encoding: defaultSetting.encoding,
 
     // images to download per batch
-    downloadPerBatch: defaultSetting.downloadPerBatch
+    downloadPerBatch: defaultSetting.downloadPerBatch,
+
+    imagesLimit: defaultSetting.imagesLimit,
 }
