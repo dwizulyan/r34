@@ -1,9 +1,7 @@
-import { ProcessedImage, Image } from "../types/types"
 import { writeFile, stat, unlink } from "fs/promises"
 import defaultSetting from "../../setting.json"
 import path from "path"
 import readLine from "readline/promises"
-import { watch } from "fs"
 
 export class Wait {
     constructor() { }

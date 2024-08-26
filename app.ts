@@ -20,9 +20,10 @@ const settingMethod = new Setting();
 
 const parser = yargs(hideBin(argv))
 
+
 async function downloadImage(tags: string) {
     try {
-        const directory = path.join(settings.location, tags.replaceAll(" ", "-").replaceAll("+ai_generated", ""), settings.folderImagesName)
+        const directory = path.join(settings.location, tags.replaceAll("user:", "").replaceAll(" ", "-").replaceAll("+ai_generated", ""), settings.folderImagesName)
         const images: { length: number, images: { url: string, id: number }[] } = await image.getImages(tags)
         await image.checkDirectory(directory)
         await image.batchDownlood(settings.downloadPerBatch, images.images, 0, Math.ceil(images.images.length / settings.downloadPerBatch), directory, tags)
@@ -73,6 +74,7 @@ async function run() {
     }
 
     else {
+
         let loop = true
         while (loop) {
             const choice = await rl.question("❔  What you wanna do today ? (download / update / setting) : ")
