@@ -1,10 +1,12 @@
 import UpdateService from "../services/updateImageService";
+import { DownloadImage } from "../services/downloadImageService";
 
 const update = new UpdateService();
+const images = new DownloadImage();
 
 async function test() {
     try {
-        await update.checkUpdate("kiwora")
+        await images.getImages("lewdwaifulaifu")
     }
     catch (err) {
         console.log(err)

@@ -118,3 +118,13 @@ export class Setting {
         }
     }
 }
+
+export function transfromTag(tag: string): string {
+    const trim = tag.replaceAll("user:", "").replaceAll(" ", "-").replaceAll("+ai_generated", "").replaceAll("_", " ").split(" ")
+    let final: string = "";
+    for (let x = 0; x < trim.length; x++) {
+        final += (trim[x][0].toUpperCase() + trim[x].slice(1))
+        final += " "
+    }
+    return final.slice(0, final.length - 1)
+}

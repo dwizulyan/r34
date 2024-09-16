@@ -27,18 +27,26 @@ export class DownloadImage {
      * @return { string[] } array of string containing images links
      */
     async getImages(tags: string): Promise<GetImageReturn | any> {
-
-        const history: string[] = []
+        let hasMore: boolean = true;
+        const images: { url: string, id: number }[] = []
+        let page = 0;
         try {
             logger.log("")
             logger.log(`Searching 🔍 : ${tags.replaceAll(" ", "+")}`)
-            const response: AxiosResponse = await axios.get(`${API}&limit=${settings.imagesLimit}&tags=${tags}`)
-            const images: { url: string, id: number }[] = response.data.map((image: Image) => {
-                return { url: image.file_url, id: image.id }
-            })
-            if (response) logger.log(`Found : ${images.length} images !!!`)
-            await delayer.start(1000 * delayAfterDownload)
-            logger.log("")
+            while (hasMore) {
+                const response: AxiosResponse = await axios.get(`${API}&limit=${settings.imagesLimit}&tags=${tags}&pid=${page}`)
+                if (response.data.length > 0) {
+
+                    response.data.map((image: Image) => {
+                        images.push({ url: image.file_url, id: image.id })
+                    })
+                    page++
+                }
+                else {
+                    hasMore = false;
+                }
+            }
+            logger.log(`Found ${images.length} images`)
             return { length: images.length, images: images }
         } catch (err) {
             if (err instanceof Error) {
@@ -46,6 +54,7 @@ export class DownloadImage {
             }
         }
     }
+
 
     /**
      * Check a directory if it exists or not
