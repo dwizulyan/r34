@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { access, mkdir, writeFile } from "fs/promises";
+import { readFile, access, mkdir, writeFile } from "fs/promises";
 import fs from "fs";
 
 import { settings } from "../utils/setting";
@@ -96,9 +96,8 @@ export class DownloadImage {
             response.data.on('data', (chunk: Buffer) => {
                 downloadedLength += chunk.length;
                 const progress = (downloadedLength / totalLength) * 100;
-                process.stdout.write(`🟢  Progress : ${progress.toFixed(2)}%\r`);
+                process.stdout.write(`\r\x1b[K🟢  Progress : ${progress.toFixed(2)}% (${downloadedLength} / ${totalLength})`);
             });
-
             await new Promise((resolve, reject) => {
                 writer.on("finish", () => {
                     resolve("")
@@ -144,7 +143,36 @@ export class DownloadImage {
                 } catch {
                     ;
                 }
+
             }))
+
+            try {
+
+                logger.log("Writing history.json...")
+                await writeFile(path.join(directory, "../downloaded.json"), JSON.stringify(downloaded))
+
+                logger.log("Upating queue.json....")
+                const currQueue: typeof images = images.map(data => { return data })
+                for (let x = 0; x < downloaded.length; x++) {
+                    for (let y = 0; y < currQueue.length; y++) {
+                        if (downloaded[x].id === currQueue[y].id) {
+                            currQueue.splice(y, 1)
+                        }
+                        else {
+                            ;
+                        }
+
+                    }
+                }
+                await writeFile(path.join(directory, "../queue.json"), JSON.stringify(currQueue))
+
+            } catch (err) {
+                if (err instanceof Error) {
+                    logger.log(`error encountered : ${err.toString()}`)
+                    logger.log("Exiting process")
+                    process.exit()
+                }
+            }
 
             logger.log("")
             logger.log(`Success downloading batch ${batch + 1} ✅`);
@@ -155,32 +183,8 @@ export class DownloadImage {
 
             await new Promise(resolve => setTimeout(resolve, 1000 * 2))
         }
-        if (history.length > 0) {
-            const newHistory: { url: string, id: number }[] = downloaded
-            newHistory.concat(history)
-
-            newHistory.sort((a: { url: string, id: number }, b: { url: string, id: number }) => { return a.id - b.id })
-            await this.createHistory(path.join(directory, "../", 'history.json'), newHistory)
-        } else {
-            const sortedDownload = downloaded.sort((a: { url: string, id: number }, b: { url: string, id: number }) => { return a.id - b.id })
-            await this.createHistory(path.join(directory, "../", 'history.json'), sortedDownload)
-        }
-
         logger.log("Success downloading all batch ✅")
         logger.log("Bye... 🖐️")
 
-    }
-    async createHistory(directory: string, history: { url: string, id: number }[]) {
-        try {
-            logger.log(`Creating .history file in ${directory}`)
-            await writeFile(directory, JSON.stringify(history.sort((a: { url: string, id: number }, b: { url: string, id: number }) => a.id - b.id)))
-            logger.log("Success creating .history file 👍")
-            logger.log("")
-        }
-        catch (err) {
-            if (err instanceof Error) {
-                logger.log(err.toString())
-            }
-        }
     }
 }

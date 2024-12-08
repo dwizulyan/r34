@@ -9,10 +9,13 @@ import { Sort } from "../utils/common";
 import { settings } from "../utils/setting";
 
 import { Image, ProcessedImage } from "../utils/types/types";
+import { todo } from "node:test";
+import { writeFile } from "fs/promises";
+import { json } from "stream/consumers";
 
 const logger = new Logger();
 const wait = new Wait();
-const downlaodImg = new DownloadImage();
+const downloadImg = new DownloadImage();
 const sorter = new Sort();
 
 const defaultLocation = settings.location
@@ -31,38 +34,42 @@ class UpdateService {
      */
     async checkUpdate(tags: string) {
         try {
-            const tagsLocation: string = path.join(defaultLocation, tags, "history.json")
+            const tagsLocation: string = path.join(defaultLocation, tags, "downloaded.json")
             logger.log(`Checking : ${tagsLocation}`)
-            await wait.start(1)
             await access(tagsLocation)
             logger.log("File exists!!")
-            await wait.start(1)
 
-            const history = await readFile(path.join(tagsLocation), { encoding: defaultEncoding })
-            const parsedHistory = JSON.parse(history)
+            const downloaded = await readFile(path.join(tagsLocation), { encoding: defaultEncoding })
+            const parsedHistory = JSON.parse(downloaded)
             const images = await axios.get(`${API}&tags=${tags}`)
 
             const sortedHistory: ProcessedImage[] = sorter.sort(parsedHistory);
             const sortedData: Image[] = sorter.sort(images.data)
 
             let newImage = 0;
-            const toDownload = [];
+            const toDownload: Image[] = [];
 
             for (let x = 0; x < sortedData.length; x++) {
                 if (!sortedHistory[x]) {
-                    newImage++
-                    toDownload.push({
-                        url: sortedData[x].file_url,
-                        id: sortedData[x].id
-                    })
+                    toDownload.push(sortedData[x])
+                    newImage++;
                 }
             }
+            console.log(toDownload)
+
 
             if (newImage > 0) {
                 logger.log(`New image found!!`)
                 logger.log(`${newImage} image to download`)
 
-                await downlaodImg.batchDownlood(5, toDownload, 0, Math.ceil(toDownload.length / 5), path.join(defaultLocation, tags, defaultFolderImagesName), tags, toDownload)
+                for (let x = 0; x < newImage; x++) {
+                    logger.log(`Downloading ${toDownload[x].file_url}`)
+                    await downloadImg.download(toDownload[x].file_url, path.join(defaultLocation, tags, defaultFolderImagesName), tags)
+                    logger.log(`Updating history...`)
+                    sortedHistory.push({ url: toDownload[x].file_url, id: toDownload[x].id })
+                    logger.log("Writing new download.json")
+                    await writeFile(path.join(defaultLocation, tags, "downloaded.json"), JSON.stringify(sortedHistory))
+                }
             }
         } catch (err) {
             if (err instanceof Error)

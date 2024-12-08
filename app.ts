@@ -18,6 +18,12 @@ const update = new UpdateService();
 const logger = new Logger();
 const settingMethod = new Setting();
 
+const rl = readLine.createInterface({
+    input: stdin,
+    output: stdout,
+})
+
+
 const parser = yargs(hideBin(argv))
 
 
@@ -48,11 +54,6 @@ async function updateImage(tags: string) {
 
 async function run() {
     const argv = await parser.argv
-    const rl = readLine.createInterface({
-        input: stdin,
-        output: stdout,
-    })
-
     if (argv._.length > 0) {
         if (argv._[0] === "download") {
             let tags = argv._[1]
@@ -63,7 +64,12 @@ async function run() {
             await downloadImage(tags as string)
         }
         else if (argv._[0] === "update") {
-            logger.log("Update function is still in progress...")
+            let tags = argv._[1]
+            if (!argv._[1]) {
+                tags = await rl.question("➡️  What tags you wanna update ? : ")
+            }
+            logger.log(`start to update ${tags}`)
+            await updateImage(tags as string)
 
         }
         else if (argv._[0] === "setting") {
@@ -101,7 +107,13 @@ async function run() {
         }
     }
     rl.close()
-
 }
-
 run()
+
+process.on("SIGINT", async () => {
+    logger.log("Pressed CTRL + c...")
+    logger.log("Pausing download")
+    logger.log("To resume run this command : r34 resume [tag]")
+    process.exit()
+})
+
